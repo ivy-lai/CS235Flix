@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from cs235flix.adapters.repository import AbstractRepository
-from cs235flix.domainmodel.user import User
+from cs235flix.domainmodel.full_model import User
 
 
 class NameNotUniqueException(Exception):

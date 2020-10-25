@@ -247,7 +247,7 @@ def movie_by_id():
     target_id = int(request.args.get('id'))
     # movie_to_show_reviews = request.args.get('view_reviews_for')
 
-    # Fetch the first and last articles in the series.
+    # Fetch the first and last movie in the series.
     # first_movie = services.get_first_movie(repo.repo_instance)
     # last_movie = services.get_last_movie(repo.repo_instance)
 
@@ -259,12 +259,12 @@ def movie_by_id():
             for item in watchlist:
                 if movie['id'] == item['id']:
                    watch += 1
-            # Construct urls for viewing article comments and adding comments.
+            # Construct urls for viewing movie comments and adding comments.
             # movie['view_comment_url'] = url_for('movies_bp.movie_by_id', id=target_id, view_reviews_for=movie['id'])
             movie['add_review_url'] = url_for('movies_bp.review_on_movie', movie=movie['id'])
             movie['add_watchlist_url'] = url_for('movies_bp.movies_by_watchlist', movie=movie['id'])
             movie['delete_watchlist_url'] = url_for('movies_bp.delete_watchlist', movie=movie['id'])
-            # Generate the webpage to display the articles.
+            # Generate the webpage to display the movie.
             return render_template(
                 'movies/one_movie.html',
                 title='Movie',
@@ -328,36 +328,27 @@ def review_on_movie():
     # Obtain the username of the currently logged in user.
     username = session['username']
 
-    # Create form. The form maintains state, e.g. when this method is called with a HTTP GET request and populates
-    # the form with an article id, when subsequently called with a HTTP POST request, the article id remains in the
-    # form.
     form = ReviewForm()
 
     if form.validate_on_submit():
-        # Successful POST, i.e. the comment text has passed data validation.
-        # Extract the article id, representing the commented article, from the form.
         movie_id = int(form.movie_id.data)
-        # Use the service layer to store the new comment.
         services.add_review(username, movie_id, form.comment.data, int(form.rating.data[0]), repo.repo_instance)
 
-        # Retrieve the article in dict form.
+        # Retrieve the movie in dict form.
         movie_dict = services.get_movie_by_id(movie_id, repo.repo_instance)
-        # Cause the web browser to display the page of all articles that have the same date as the commented article,
-        # and display all comments, including the new comment.
         return redirect(url_for('movies_bp.movie_by_id', id=movie_dict['id']))
 
     if request.method == 'GET':
         # Request is a HTTP GET to display the form.
-        # Extract the article id, representing the article to comment, from a query parameter of the GET request.
         movie_id = request.args.get('movie')
-    #     # Store the article id in the form.
+    #     # Store the movie id in the form.
         form.movie_id.data = int(movie_id)
     else:
         # Request is a HTTP POST where form validation has failed.
-        # Extract the article id of the article being commented from the form.
+        # Extract the movie id of the movie being commented from the form.
         movie_id = int(form.movie_id.data)
 
-    # For a GET or an unsuccessful POST, retrieve the article to comment in dict form, and return a Web page that allows
+    # For a GET or an unsuccessful POST, retrieve the movie to comment in dict form, and return a Web page that allows
     # the user to enter a comment. The generated Web page includes a form object.
     movie = services.get_movie_by_id(int(movie_id), repo.repo_instance)
     return render_template(
@@ -366,7 +357,6 @@ def review_on_movie():
         movie=movie,
         form=form,
         handler_url=url_for('movies_bp.review_on_movie'),
-        # selected_articles=utilities.get_selected_movie(),
         tag_urls=utilities.get_genre_urls()
     )
 

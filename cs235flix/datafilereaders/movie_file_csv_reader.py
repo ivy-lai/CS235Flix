@@ -1,9 +1,9 @@
 import csv
 
-from domainmodel.full_model import Movie
-from domainmodel.genre import Genre
-from cs235flix.domainmodel.actor import Actor
-from domainmodel.director import Director
+from cs235flix.domainmodel.full_model import Movie
+from cs235flix.domainmodel.full_model import Genre
+from cs235flix.domainmodel.full_model import Actor
+from cs235flix.domainmodel.full_model import Director
 
 
 class MovieFileCSVReader:
